@@ -554,10 +554,10 @@ Prompts for a `DEST' when called interactively."
    (list
     (read-file-name "Destination file: " nil nil "confirm")))
   (traad--fetch-perform-refresh
-   (buffer-file-name)
+   (path-in-project (buffer-file-name))
    "/refactor/move_global"
-   :data (list (cons "dest" dest)
-               (cons "path" (buffer-file-name))
+   :data (list (cons "dest" (path-in-project dest))
+               (cons "path" (path-in-project (buffer-file-name)))
                (cons "offset" (traad--adjust-point (point))))))
 
 ;;;###autoload
@@ -2004,6 +2004,10 @@ This starts a new server if necessary."
 Returns `nil' if there is not such project.
 "
   (locate-dominating-file for-path ".ropeproject"))
+
+(defun path-in-project (path)
+  (file-relative-name path (traad--find-project-root (buffer-file-name))))
+
 
 (defun traad--get-host (for-path)
   "Get the host of the server responsible for `for-path'.
